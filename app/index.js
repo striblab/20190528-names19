@@ -416,7 +416,7 @@ if ($.urlParam('name') != 0 ) {
 //top 20 girls
   for (var i=0; i < data20g.length; i++){
     $("#namesList2").append('<div class="chart-tooltip"><div class="tooltip-label">' + data20g[i].NAME + '</div>' + 
-            '<div class="tooltip-value" style="color:#E07242;font-weight:900;">' + d3.format(".1f")(data20g[i].RatePer10k) + '</div></div>');
+            '<div class="tooltip-value" style="color:#857AAA;font-weight:900;">' + d3.format(".1f")(data20g[i].RatePer10k) + '</div></div>');
   }
 
     function chartTypeM() {

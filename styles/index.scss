@@ -29,3 +29,11 @@ $selector-wrapper: '.strib-styles.ssa.ssb.ssc';
   // Split your styles into multiple files so its easier to understand and change
   @import 'shared/_project';
 }
+
+@media (max-width:800px) {
+  #wrapper,
+  .slide,
+  .listBox {
+      width: 100% !important;
+  }
+}

@@ -90,6 +90,11 @@ p {
       margin-left: auto;
       margin-right: auto;
   }
+
+  .grid, .grid .overlay,  .overlay {
+      height:600px;
+      pointer-events:none !important;
+  }
   
   .elex-header h5 span {
       font-size: .9em;
@@ -184,17 +189,17 @@ p {
       .chart .c3-line {
           stroke-width: 6px !important;
       }
-      .chart-tooltip {
-          background-color: rgba(0, 0, 0, 0.8);
-          color: #FFFFFF;
-          font-size: 0.85em;
-          padding: 0.5em 1em;
-          .tooltip-label {
-              font-weight: 900;
-              display: inline-block;
-              padding-right: 0.5em;
-          }
-      }
+    //   .chart-tooltip {
+    //       background-color: rgba(0, 0, 0, 0.8);
+    //       color: #FFFFFF;
+    //       font-size: 0.85em;
+    //       padding: 0.5em 1em;
+    //       .tooltip-label {
+    //           font-weight: 900;
+    //           display: inline-block;
+    //           padding-right: 0.5em;
+    //       }
+    //   }
       .chart-tooltip {
         text-align:left;
         
@@ -267,10 +272,6 @@ p {
           padding: 4px;
           color: #fff;
           font-weight: bold;
-          border-radius: 5px;
-          padding: 0 7px;
-          margin-bottom: 3px;
-          display: inline-block;
       }
       .chatter {
           line-height: 140%;
@@ -279,12 +280,6 @@ p {
       .chartTitle {
           font-size: 1.5em;
           font-weight: 900;
-      }
-      @media (max-width:800px) {
-          #wrapper,
-          .slide {
-              width: 100%;
-          }
       }
       @media (max-width:500px) {
           #wrapper {
