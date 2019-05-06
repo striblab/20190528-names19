@@ -377,19 +377,29 @@ $.urlParam = function(name){
   else { return 0; }
 }
 
+var name = "";
+var gender = "";
+var colorMe = "";
+
 if ($.urlParam('name') != 0 ) { 
-  var name = toTitleCase($.urlParam('name')); 
-  var gender = String($.urlParam('gender')).toUpperCase();
-  var genderStatus = gender; 
-  $("#" + gender).addClass("selected");
-  if (gender == "M") { var colorMe = "#E07242"; var sex = "boy"; var genderfull="male" }
-  else  { var colorMe = "#857AAA";  var sex = "girl"; var genderfull = "female"; }
+  name = toTitleCase($.urlParam('name')); 
+  gender = String($.urlParam('gender')).toUpperCase();
+//   var genderStatus = gender; 
+//   $("#" + gender).addClass("selected");
+  if (gender == "M") { colorMe = "#E07242"; }
+  else  { colorMe = "#857AAA"; }
   $("#named, #named2").html(name);
   // $("#gender").html(sex);
   // $(".sex").html(genderfull);
   // $("#named, #rate, #named2, .sex").css("color",colorMe);
-  switchChart(name,gender,colorMe);
-} 
+} else {
+    name = "Olivia";
+    gender = "F";
+    colorMe = "#857AAA";
+    $("#named, #named2").html(name);
+}
+
+    switchChart(name,gender,colorMe);
 
   $( document ).ready(function() {
     $(".switch").click(function()  { 
