@@ -465,15 +465,14 @@ if ($.urlParam('name') != 0 ) {
             axis: {
                 rotated: true,
                 y: {
-                    max: 15,
+                    max: 10,
                     min: 0,
                     padding: {
                         bottom: 0,
                         top: 0
                     },
                     tick: {
-                        count: 8,
-                        values: [0, 5, 10, 15],
+                        values: [0, 5, 10],
                         format: d3.format('+.0%')
                     }
                 },
@@ -532,15 +531,14 @@ if ($.urlParam('name') != 0 ) {
                 axis: {
                     rotated: true,
                     y: {
-                        max: 15,
+                        max: 10,
                         min: 0,
                         padding: {
                             bottom: 0,
                             top: 0
                         },
                         tick: {
-                            count: 8,
-                            values: [0, 5, 10, 15],
+                            values: [0, 5, 10],
                             format: d3.format('+.0%')
                         }
                     },
