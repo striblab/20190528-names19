@@ -30,6 +30,11 @@ $selector-wrapper: '.strib-styles.ssa.ssb.ssc';
   @import 'shared/_project';
 }
 
+.content-scroll {
+  max-width: 100% !important;
+  margin: auto;
+}
+
 @media (max-width:800px) {
   #wrapper,
   .slide,
@@ -37,3 +42,4 @@ $selector-wrapper: '.strib-styles.ssa.ssb.ssc';
       width: 100% !important;
   }
 }
+
