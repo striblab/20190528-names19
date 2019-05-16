@@ -289,7 +289,7 @@ var chart = c3.generate({
         },
         point: {
             show: true,
-            r: function(d) { if (d.x == 2017) { return 6;} else { return 2.5; } }
+            r: function(d) { if (d.x == 2017) { return 4.5;} else { return 2; } }
         },
     axis: {
       y: {
