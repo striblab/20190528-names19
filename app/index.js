@@ -135,7 +135,7 @@ var rate2 = 0;
 var birthNum = 0;
 var birthNum2 = 0;
 
-for (var j=1910; j<2018; j++){
+for (var j=1910; j<=2018; j++){
   axis[indexYear] = j;
   dataStreamM[indexYear] = 0;
   dataStreamF[indexYear] = 0;
@@ -201,8 +201,6 @@ dataStreamM[dataStreamM.length] = null;
 dataStreamM[dataStreamM.length] = null;
 dataStreamM[dataStreamM.length] = null;
 dataStreamM[dataStreamM.length] = null;
-dataStreamM[dataStreamM.length] = null;
-dataStreamM[dataStreamM.length] = null;
 dataStreamF[dataStreamF.length] = null;
 dataStreamF[dataStreamF.length] = null;
 dataStreamF[dataStreamF.length] = null;
@@ -215,10 +213,6 @@ dataStreamF[dataStreamF.length] = null;
 dataStreamF[dataStreamF.length] = null;
 dataStreamF[dataStreamF.length] = null;
 dataStreamF[dataStreamF.length] = null;
-dataStreamF[dataStreamF.length] = null;
-dataStreamF[dataStreamF.length] = null;
-axis[axis.length] = "2017";
-axis[axis.length] = "2018";
 axis[axis.length] = "2019";
 axis[axis.length] = "2020";
 axis[axis.length] = "2021";
@@ -232,15 +226,15 @@ axis[axis.length] = "2028";
 axis[axis.length] = "2029";
 axis[axis.length] = "2030";
 
-if (year != 2017) {
+if (year != 2018) {
           rate = 0;
-          year = 2017;
+          year = 2018;
           birthNum = 0;
 }
 
-if (year2 != 2017) {
+if (year2 != 2018) {
           rate2 = 0;
-          year2 = 2017;
+          year2 = 2018;
           birthNum2 = 0;
 }
 
@@ -287,9 +281,12 @@ var chart = c3.generate({
         legend: {
             show: false
         },
+        line: {
+            connectNull: true,
+        },
         point: {
             show: true,
-            r: function(d) { if (d.x == 2017) { return 4.5;} else { return 2; } }
+            r: function(d) { if (d.x == 2018) { return 4.5;} else { return 2; } }
         },
     axis: {
       y: {
@@ -303,7 +300,7 @@ var chart = c3.generate({
         x: {
         	padding: {right: 0, left: 0},
             tick: {
-                values: ['1910', '1940', '1970', '2000', '2030'],
+                values: [1910, 1940, 1970, 2000, 2030],
                 count: 4,
                 multiline: false
             }
@@ -336,12 +333,14 @@ var chart = c3.generate({
           }
         }
 
-        for (var k=0; k < data.length; k++){
-          if (data[k].name == name && data[k].year == d[0].x && data[k].gender == "F"){
-            birthNum2 = data[k].births;
+        for (var w=0; w < data.length; w++){
+          if (data[w].name == name && data[w].year == d[0].x && data[w].gender == "F"){
+            birthNum2 = data[w].births;
             break;
           }
         }
+        console.log(d[1].value);
+
           $("#infobox").html('<div class="chart-tooltip">' +
             '<div class="tooltip-label">' + d[0].x + '</div></div>' +
             '<div class="chart-tooltip"><div class="tooltip-label">Rate</div>' + 
@@ -393,7 +392,7 @@ if ($.urlParam('name') != 0 ) {
   // $(".sex").html(genderfull);
   // $("#named, #rate, #named2, .sex").css("color",colorMe);
 } else {
-    name = "Olivia";
+    name = "Evelyn";
     gender = "F";
     colorMe = "#857AAA";
     $("#named, #named2").html(name);
@@ -444,8 +443,8 @@ if ($.urlParam('name') != 0 ) {
             data: {
                 x: 'x',
                 columns: [
-                    ['x', "Kyrie","Kane","Harvey","Cyrus","Leonard","Maverick","Brooks","Nash","Bodhi","Warren","Knox","Arlo","Theodore","Bilal","Arthur","Finley","Lorenzo","Ali","Izaiah","Lachlan","Luqman","Malakai","Theo","Mateo","Remington"],
-                    ['value', 5.1111,4.0000,3.8485,2.8889,2.8889,2.7692,2.4043,2.4043,2.3333,2.3333,2.2558,2.2308,2.2237,2.2000,2.1481,2.0435,1.8000,1.7778,1.7778,1.7778,1.7778,1.7778,1.7660,1.7619,1.7273]
+                    ['x', "Rhett","Bjorn","Case","Arlo","Atlas","Dax","Bodhi","Mahir","Finnley","Remy","Lachlan","Theo","Hendrix","Wade","Muad","Sage","Maverick","Harlan","Zain","Winston","Barrett","Finley","Bilal","Conor","Wilder"],
+                    ['value', 6.188,4.222,4.222,4.087,3.833,3.667,3.389,3.333,3.24,2.952,2.778,2.696,2.655,2.556,2.48,2.333,2.259,2.167,2.167,2.139,2.043,2.033,2,1.944,1.944]
                 ],
                 type: 'bar',
                 labels: {
@@ -511,8 +510,8 @@ if ($.urlParam('name') != 0 ) {
                 data: {
                     x: 'x',
                     columns: [
-                        ['x', "Everly","Nova","Valentina","Margot","Thea","Emersyn","Amina","Haven","Freya","Juniper","Luna","Finley","Wren","Braelynn","Colette","Dorothy","Louise","Asiya","Leilani","Sloane","Zara","Blake","Arya","Hafsa","Zahra"],
-                        ['value', 10.6667,4.2000,3.8276,3.8000,3.7368,3.4828,3.4000,3.4000,3.0741,3.0476,2.7349,2.5821,2.4483,2.3333,2.3333,2.3333,2.3333,2.2000,2.2000,2.2000,2.2000,2.0303,1.9310,1.8571,1.8571]
+                        ['x', "Thea","Adaline","Everleigh","Lennon","Everly","Zara","Remi","Leilani","Margot","Magnolia","River","Luna","Marwa","Sloane","Nova","Raelynn","Blake","Ophelia","Loretta","Rosie","Rowan","Elaine","Poppy","Veda","Harley"],
+                        ['value', 5.931,5.333,4.524,4.524,4.176,3.905,3.714,3.44,3.138,3.12,3.03,2.98,2.96,2.935,2.914,2.913,2.879,2.857,2.667,2.667,2.621,2.286,2.286,2.286,1.966]
                     ],
                     type: 'bar',
                     labels: {
