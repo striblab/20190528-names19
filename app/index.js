@@ -18,14 +18,10 @@ import c3 from 'c3';
 import rows from '../sources/names.json';
 import rows20b from '../sources/top20_boys.json';
 import rows20g from '../sources/top20_girls.json';
-import rowstb from '../sources/trend_boys.json';
-import rowstg from '../sources/trend_girls.json';
 
 var data = rows.names;
 var data20b = rows20b.tops;
 var data20g = rows20g.tops;
-var datatb = rowstb.change;
-var datatg = rowstg.change;
 
 // Mark page with note about development or staging
 utils.environmentNoting();
@@ -123,29 +119,31 @@ else if (selected != null) {
     $("#" + selected).show();
 }
 
-var axis = [];
-var dataStreamM = ['M'];
-var dataStreamF = ['F'];
-axis[0] = 'x';
-var indexYear = 1;
-var year = 0;
-var year2 = 0;
-var rate = 0;
-var rate2 = 0;
-var birthNum = 0;
-var birthNum2 = 0;
 
-for (var j=1910; j<=2018; j++){
-  axis[indexYear] = j;
-  dataStreamM[indexYear] = 0;
-  dataStreamF[indexYear] = 0;
-  indexYear++;
-}
+var chart;
 
-function switchChart(name,gender,colors){
+function switchChart(name,initial){
+
+    var axis = [];
+    var dataStreamM = ['M'];
+    var dataStreamF = ['F'];
+    axis[0] = 'x';
+    var indexYear = 1;
+    var year = 0;
+    var year2 = 0;
+    var rate = 0;
+    var rate2 = 0;
+    var birthNum = 0;
+    var birthNum2 = 0;
+
+    for (var j=1910; j<=2018; j++){
+    axis[indexYear] = j;
+    dataStreamM[indexYear] = 0;
+    dataStreamF[indexYear] = 0;
+    indexYear++;
+    }
 
   var found = false;
-  dataStreamM[0] = name;
   var index = 0;
 
   for (var i=0; i < data.length; i++){
@@ -162,7 +160,6 @@ function switchChart(name,gender,colors){
           index++; 
         }
       }
-      // break;
   }
 }
 
@@ -182,7 +179,6 @@ index = 0;
           index++; 
         }
       }
-      // break;
   }
 }
 
@@ -256,6 +252,7 @@ $("#infobox2").html('<div class="chart-tooltip ">' +
 
 if (found == true){
 
+    if (initial == true) {
 var  padding = {
         top: 20,
         right: 60,
@@ -265,7 +262,7 @@ var  padding = {
 
 var share = "#B0BEC5";
 
-var chart = c3.generate({
+ chart = c3.generate({
         bindto: '#chart',
         padding: padding,
     data: {
@@ -275,9 +272,12 @@ var chart = c3.generate({
             dataStreamM,
             dataStreamF
         ],
-        type: 'line'
+        type: 'line',
+        colors: {
+            'M': '#E07242',
+            'F': '#857AAA'
+        }
     },
-    color:  {  pattern: ["#E07242","#857AAA"] },
         legend: {
             show: false
         },
@@ -339,7 +339,6 @@ var chart = c3.generate({
             break;
           }
         }
-        console.log(d[1].value);
 
           $("#infobox").html('<div class="chart-tooltip">' +
             '<div class="tooltip-label">' + d[0].x + '</div></div>' +
@@ -360,8 +359,21 @@ var chart = c3.generate({
         }
       }
 });
+    } else if (initial == false) {
+        chart.load({
+            columns:[
+                dataStreamM,
+                dataStreamF
+            ]
+        });
+    }
 }
-else { $("#current").html("<div id='notfound'>Name not found</div>"); }
+else { 
+    //$("#current").html("<div id='notfound'>Name not found</div>"); 
+    chart.load({
+        unload: ['M', 'F']
+    });
+}
 
 }
 
@@ -377,28 +389,19 @@ $.urlParam = function(name){
 }
 
 var name = "";
-var gender = "";
-var colorMe = "";
 
 if ($.urlParam('name') != 0 ) { 
   name = toTitleCase($.urlParam('name')); 
-  gender = String($.urlParam('gender')).toUpperCase();
-//   var genderStatus = gender; 
-//   $("#" + gender).addClass("selected");
-  if (gender == "M") { colorMe = "#E07242"; }
-  else  { colorMe = "#857AAA"; }
+
   $("#named, #named2").html(name);
-  // $("#gender").html(sex);
-  // $(".sex").html(genderfull);
-  // $("#named, #rate, #named2, .sex").css("color",colorMe);
+
 } else {
     name = "Evelyn";
-    gender = "F";
-    colorMe = "#857AAA";
+
     $("#named, #named2").html(name);
 }
 
-    switchChart(name,gender,colorMe);
+    switchChart(name,true);
 
   $( document ).ready(function() {
     $(".switch").click(function()  { 
@@ -410,8 +413,12 @@ if ($.urlParam('name') != 0 ) {
    $('#filter_box').keyup(function(e){
         if(e.keyCode == 13)
         {
-          // window.location.href = './?name=' + $('#filter_box').val() + '&gender=' + genderStatus;
-          window.location.href = './?chart=lookup&name=' + $('#filter_box').val();
+            name = toTitleCase($('#filter_box').val()); 
+            $("#named, #named2").html(name);
+            switchChart(name,false);
+            history.pushState({urlPath:'/?name=' + $('#filter_box').val()},"",'./?name=' + $('#filter_box').val());
+            // window.history.href = './?chart=lookup&name=' + $('#filter_box').val();
+          
         }
     });
 });
@@ -452,6 +459,9 @@ if ($.urlParam('name') != 0 ) {
                         'value': d3.format('+.0%')
                     }
                 }
+            },
+            transition: {
+                duration: 400
             },
             legend: {
                 show: false
