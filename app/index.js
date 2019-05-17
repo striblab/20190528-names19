@@ -100,25 +100,53 @@ utils.environmentNoting();
 // });
 
 
-$.urlParam = function(name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results != null) {
-        return results[1] || 0;
-    } else {
-        return null;
-    }
+
+function toTitleCase(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
-var selected = $.urlParam('chart');
-
-if (selected == "all"){
-    $(".slide").show();
-}
-else if (selected != null) {
-    // $(".slide").hide();
-    $("#" + selected).show();
+$.urlParam = function(name){
+  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  if (results != null) { return results[1]; }
+  else { return 0; }
 }
 
+var mainname = "";
+
+if ($.urlParam('name') != 0 ) { 
+    mainname = toTitleCase($.urlParam('name')); 
+
+  $("#named, #named2").html(mainname);
+
+} else {
+    mainname = "Evelyn";
+
+    $("#named, #named2").html(mainname);
+}
+
+    switchChart(mainname,true);
+
+  $( document ).ready(function() {
+    $(".switch").click(function()  { 
+       genderStatus = $(this).attr("data");
+       $(".switch").removeClass("selected");
+       $(this).addClass("selected");
+    });
+
+   $('#filter_box').keyup(function(e){
+    mainname = toTitleCase($('#filter_box').val()); 
+
+        if(e.keyCode == 13)
+        {
+            $("#named, #named2").html(mainname);
+            switchChart(mainname,false);
+            history.pushState({urlPath:'/?name=' + $('#filter_box').val()},"",'./?name=' + $('#filter_box').val());
+            // window.history.href = './?chart=lookup&name=' + $('#filter_box').val();
+          
+        }
+    });
+});
 
 var chart;
 
@@ -327,14 +355,16 @@ var share = "#B0BEC5";
         var birthNum2 = 0;
 
         for (var k=0; k < data.length; k++){
-          if (data[k].name == name && data[k].year == d[0].x && data[k].gender == "M"){
+          if (data[k].name == mainname && data[k].year == d[0].x && data[k].gender == "M"){
+            console.log(data[k].name);
             birthNum = data[k].births;
             break;
           }
         }
 
         for (var w=0; w < data.length; w++){
-          if (data[w].name == name && data[w].year == d[0].x && data[w].gender == "F"){
+          if (data[w].name == mainname && data[w].year == d[1].x && data[w].gender == "F"){
+              console.log(data[w].name);
             birthNum2 = data[w].births;
             break;
           }
@@ -377,51 +407,6 @@ else {
 
 }
 
-function toTitleCase(str)
-{
-    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}
-
-$.urlParam = function(name){
-  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-  if (results != null) { return results[1]; }
-  else { return 0; }
-}
-
-var name = "";
-
-if ($.urlParam('name') != 0 ) { 
-  name = toTitleCase($.urlParam('name')); 
-
-  $("#named, #named2").html(name);
-
-} else {
-    name = "Evelyn";
-
-    $("#named, #named2").html(name);
-}
-
-    switchChart(name,true);
-
-  $( document ).ready(function() {
-    $(".switch").click(function()  { 
-       genderStatus = $(this).attr("data");
-       $(".switch").removeClass("selected");
-       $(this).addClass("selected");
-    });
-
-   $('#filter_box').keyup(function(e){
-        if(e.keyCode == 13)
-        {
-            name = toTitleCase($('#filter_box').val()); 
-            $("#named, #named2").html(name);
-            switchChart(name,false);
-            history.pushState({urlPath:'/?name=' + $('#filter_box').val()},"",'./?name=' + $('#filter_box').val());
-            // window.history.href = './?chart=lookup&name=' + $('#filter_box').val();
-          
-        }
-    });
-});
 
 //top 20 boys
   for (var i=0; i < data20b.length; i++){
