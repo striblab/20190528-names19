@@ -356,7 +356,6 @@ var share = "#B0BEC5";
 
         for (var k=0; k < data.length; k++){
           if (data[k].name == mainname && data[k].year == d[0].x && data[k].gender == "M"){
-            console.log(data[k].name);
             birthNum = data[k].births;
             break;
           }
@@ -364,7 +363,6 @@ var share = "#B0BEC5";
 
         for (var w=0; w < data.length; w++){
           if (data[w].name == mainname && data[w].year == d[1].x && data[w].gender == "F"){
-              console.log(data[w].name);
             birthNum2 = data[w].births;
             break;
           }
