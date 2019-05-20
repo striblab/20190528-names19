@@ -9,6 +9,8 @@
  */
 // /* global $, _ */
 
+console.log(0);
+
 // Dependencies
 import utils from './shared/utils.js';
 
