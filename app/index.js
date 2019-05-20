@@ -12,17 +12,6 @@
 // Dependencies
 import utils from './shared/utils.js';
 
-// import d3 from 'd3';
-import c3 from 'c3';
-
-import rows from '../sources/names.json';
-import rows20b from '../sources/top20_boys.json';
-import rows20g from '../sources/top20_girls.json';
-
-var data = rows.names;
-var data20b = rows20b.tops;
-var data20g = rows20g.tops;
-
 // Mark page with note about development or staging
 utils.environmentNoting();
 
@@ -100,14 +89,31 @@ utils.environmentNoting();
 // });
 
 
+// import d3 from 'd3';
+import c3 from 'c3';
+
+import rows from '../sources/names.json';
+import rows20b from '../sources/top20_boys.json';
+import rows20g from '../sources/top20_girls.json';
+
+console.log(1);
+
+var data = rows.names;
+var data20b = rows20b.tops;
+var data20g = rows20g.tops;
+
+console.log(2);
 
 function toTitleCase(str)
 {
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
+console.log(3);
+
 $.urlParam = function(name){
   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  console.log(4);
   if (results != null) { return results[1]; }
   else { return 0; }
 }
@@ -118,35 +124,13 @@ if ($.urlParam('name') != 0 ) {
     mainname = toTitleCase($.urlParam('name')); 
 
   $("#named, #named2").html(mainname);
+  console.log(5);
 
 } else {
     mainname = "Evelyn";
-
+    console.log(5);
     $("#named, #named2").html(mainname);
 }
-
-    switchChart(mainname,true);
-
-  $( document ).ready(function() {
-    $(".switch").click(function()  { 
-       genderStatus = $(this).attr("data");
-       $(".switch").removeClass("selected");
-       $(this).addClass("selected");
-    });
-
-   $('#filter_box').keyup(function(e){
-    mainname = toTitleCase($('#filter_box').val()); 
-
-        if(e.keyCode == 13)
-        {
-            $("#named, #named2").html(mainname);
-            switchChart(mainname,false);
-            history.pushState({urlPath:'/?name=' + $('#filter_box').val()},"",'./?name=' + $('#filter_box').val());
-            // window.history.href = './?chart=lookup&name=' + $('#filter_box').val();
-          
-        }
-    });
-});
 
 var chart;
 
@@ -164,12 +148,16 @@ function switchChart(name,initial){
     var birthNum = 0;
     var birthNum2 = 0;
 
+    console.log(6);
+
     for (var j=1910; j<=2018; j++){
     axis[indexYear] = j;
     dataStreamM[indexYear] = 0;
     dataStreamF[indexYear] = 0;
     indexYear++;
     }
+
+    console.log(7);
 
   var found = false;
   var index = 0;
@@ -191,6 +179,8 @@ function switchChart(name,initial){
   }
 }
 
+console.log(8);
+
 index = 0;
 
   for (var i=0; i < data.length; i++){
@@ -210,8 +200,7 @@ index = 0;
   }
 }
 
-
-
+console.log(9);
 
 dataStreamM[dataStreamM.length] = null;
 dataStreamM[dataStreamM.length] = null;
@@ -250,6 +239,8 @@ axis[axis.length] = "2028";
 axis[axis.length] = "2029";
 axis[axis.length] = "2030";
 
+console.log(10);
+
 if (year != 2018) {
           rate = 0;
           year = 2018;
@@ -261,6 +252,8 @@ if (year2 != 2018) {
           year2 = 2018;
           birthNum2 = 0;
 }
+
+console.log(11);
 
 $("#infobox").html('<div class="chart-tooltip">' +
   '<div class="tooltip-label">' + year + '</div></div>' +
@@ -279,8 +272,12 @@ $("#infobox2").html('<div class="chart-tooltip ">' +
     '</div>');
 
 
+    console.log(12);
 
     if (initial == true) {
+
+        console.log(13);
+
 var  padding = {
         top: 20,
         right: 60,
@@ -407,6 +404,33 @@ if (found == false) {
 }
 
 
+switchChart(mainname,true);
+
+$( document ).ready(function() {
+
+    console.log(14);
+
+ $('#filter_box').keyup(function(e){
+  mainname = toTitleCase($('#filter_box').val()); 
+
+  console.log(15);
+
+      if(e.keyCode == 13)
+      {
+          $("#named, #named2").html(mainname);
+          switchChart(mainname,false);
+          history.pushState({urlPath:'/?name=' + $('#filter_box').val()},"",'./?name=' + $('#filter_box').val());
+          // window.history.href = './?chart=lookup&name=' + $('#filter_box').val();
+        
+      }
+
+      return false;
+  });
+});
+
+
+console.log(16);
+
 //top 20 boys
   for (var i=0; i < data20b.length; i++){
     $("#namesList").append('<div class="chart-tooltip"><div class="tooltip-label">' + data20b[i].NAME + '</div>' + 
@@ -418,6 +442,8 @@ if (found == false) {
     $("#namesList2").append('<div class="chart-tooltip"><div class="tooltip-label">' + data20g[i].NAME + '</div>' + 
             '<div class="tooltip-value" style="color:#857AAA;font-weight:900;">' + d3.format(".1f")(data20g[i].RatePer10k) + '</div></div>');
   }
+
+  console.log(17);
 
     function chartTypeM() {
 
@@ -483,6 +509,8 @@ if (found == false) {
                   },
               }
         });
+
+        console.log(18);
     }
 
     chartTypeM();
@@ -549,6 +577,8 @@ if (found == false) {
                       },
                   }
             });
+
+            console.log(19);
         }
 
         chartTypeF();
