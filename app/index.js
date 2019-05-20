@@ -388,6 +388,7 @@ var share = "#B0BEC5";
       }
 });
     } else if (initial == false) {
+        $("#message").html("Rate per 10,000 births by year"); 
         chart.load({
             columns:[
                 dataStreamM,
@@ -397,7 +398,7 @@ var share = "#B0BEC5";
     }
 }
 else { 
-    //$("#current").html("<div id='notfound'>Name not found</div>"); 
+    $("#message").html("Name not found"); 
     chart.load({
         unload: ['M', 'F']
     });

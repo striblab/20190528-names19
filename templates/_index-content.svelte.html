@@ -3,7 +3,7 @@
       <h5 class="font-popular-light"><span class="font-popular-medium"></span></h5>
       <h1>How popular is your name in Minnesota?</h1>
       <p class="byline">By <a href="http://www.startribune.com/jeff-hargarten/274254381/">Jeff Hargarten</a> and <a href="http://www.startribune.com/maryjo-webster/303594441/">MaryJo Webster</a> • <span>Star Tribune</span></p> 
-      <p class="byline"><time pubdate="true" datetime="2019-05-28T16:00:00">May 16, 2019</time></p>
+      <p class="byline"><time pubdate="true" datetime="2019-05-20T16:00:00">May 20, 2019</time></p>
     </section>
 
     <section class="container-lg leadin">
@@ -20,7 +20,7 @@
     <div id="filter"><input type="search" id="filter_box" placeholder="Type name and press enter" /></div>
 
     <h2 class="chartTitle">Popularity of the name <span id="named"></span> in Minnesota</h2>
-    <div class="chatter">Rate per 10,000 <span class="stat sex"></span> births by year</div>
+    <div class="chatter" id="message">Rate per 10,000 births by year</div>
 
     <div id="chart"></div>
 
@@ -34,7 +34,21 @@
 
     <div class="sharelabel">Share this result</div>
 
-    <!-- share --> 
+    <ul class="social-links social-links-muted">
+      <li class="social-link-facebook">
+        <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 'facebook-share-dialog', 'width=626,height=436'); return false;" target="_blank" rel="noopener">
+          <i class="strib-icon strib-social-facebook-circle"></i>
+          <span class="sr-only">Share this page on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="social-link-twitter">
+        <a href="#" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href)+'&text=Check out how popular this name is in Minnesota', 'twitter-share-dialog', 'width=626,height=436'); return false;" target="_blank" rel="noopener">
+          <i class="strib-icon strib-social-twitter-circle"></i>
+          <span class="sr-only">Share this page on Twitter</span>
+        </a>
+      </li>
+    </ul>
 
     <div class="rule"></div>
       <div class="slide" id="rank">
@@ -72,7 +86,7 @@
   <div class="rule"></div>
   <div class="slide" id="trend">
         <h2 class="chartTitle">Trending Minnesota names</h2>
-        <div class="chatter">Names with the largest rate change between 2012 and 2018.</div>
+        <div class="chatter">Names with the largest rate change between 2013 and 2018.</div>
         <div class="breaker"></div>
 
     <div class="infobox listBox" id="nameBox">
