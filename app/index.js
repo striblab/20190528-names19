@@ -278,7 +278,7 @@ $("#infobox2").html('<div class="chart-tooltip ">' +
     '<div class="tooltip-value">' + d3.format(",")(birthNum2) + '</div>' +
     '</div>');
 
-if (found == true){
+
 
     if (initial == true) {
 var  padding = {
@@ -396,8 +396,8 @@ var share = "#B0BEC5";
             ]
         });
     }
-}
-else { 
+
+if (found == false) { 
     $("#message").html("Name not found"); 
     chart.load({
         unload: ['M', 'F']
