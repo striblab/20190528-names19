@@ -1,0 +1,239 @@
+---
+title: "Annual most popular baby names in Minnesota"
+author: "MaryJo Webster"
+date:  "Last updated: `r Sys.Date()`"
+output:
+  html_document: 
+    #toc: true
+    #to_depth: 1
+    #toc_float: true
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# http://strib-data-internal.s3-us-west-1.amazonaws.com/projects/misc/babynames.html
+
+
+
+
+```
+
+
+```{r, include=FALSE}
+
+#directions for running this INSIDE this project
+#DOWNLOAD NEW DATA FROM HERE: https://www.ssa.gov/OACT/babynames/limits.html
+#store it in the "data" sub-directory
+#In the second chunk of code, make sure the variables called "currentyear", "newdatayear" and "fiveyearsago have the correct years
+#it will spit out 3 files for Jeff into the output directory
+#to update the HTML page, knit the page and run the AWS code at the bottom
+
+
+
+
+#directions for running this script outside of this project
+
+# 1- create a directory on your computer, with subdirectories called "data" and "output"
+
+# 2 - put this babynames.rmd file in that main root of the directory
+
+# 3 - download the MN.TXT file from Social Security and put it in the "data" sub-folder
+
+# 4 -- In this babynames.rmd file, add a set working directory command in the section where you load the libraries. Here's what it would roughly look like -- adjust the path accordingly 
+# setwd("C:/Users/webstmj/documents/babynames")
+
+#5 - In the second chunk of code, make sure the variables called "currentyear", "newdatayear" and "fiveyearsago have the correct years (MaryJo changed them so they are correct for the 2018 data release)
+
+
+# 6 -to run the code, put your cursor at the top of the page and from the Run menu choose "run all chunks below" It will ignore the AWS code at the bottom of the page. 
+
+# 7 -- It should spit out 3 files for Jeff into the "output" directory
+
+
+```
+
+
+
+```{r, warning=FALSE, message=FALSE}
+
+packages <- c("tidyverse", "janitor", "kntir", "htmltools", "rmarkdown", "kableExtra")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())), repos = "http://cran.us.r-project.org")  
+}
+
+
+# load required packages
+library(readr) #importing csv files
+library(dplyr) #general analysis 
+library(janitor) #use this for doing crosstabs
+
+library(knitr) #needed for making tables in markdown page
+#library(car)
+library(htmltools)#this is needed for Rstudio to display kable and other html code
+library(rmarkdown)
+
+library(kableExtra)
+
+
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+#set this to the current year 
+#it's used in the "agenow" calculation
+currentyear <-  2019 #this should be the current calendar year
+
+newdatayear <-  2018 #this should be the year the newest data represents (one year earlier than calendar)
+fiveyearsago <-  2013 #this should be five years earlier than the newest data
+
+#import data file from Social Security
+#this has all years back to 1910 in it
+#so it overwrites any data we've gotten in the past
+rawdata <-  read_csv("./data/MN.TXT", col_names=FALSE,              col_types=cols(X1="c",X2="c", X3="i", X4="c", X5="i")) %>% rename(state=X1, gender=X2, yr= X3, name=X4, num_births=X5)
+
+#Add totalgenderbirths, rateper10k and agenow fields
+tot_by_gender <-  rawdata %>% group_by(yr, gender) %>% summarise(totalgenderbirths = sum(num_births))
+
+babynames <-  left_join(rawdata, tot_by_gender, by=c("yr"="yr", "gender"="gender"))%>%
+  mutate(rateper10k = round((num_births/totalgenderbirths)*10000,1),
+         agenow = currentyear-yr)
+
+#add rank
+babynames <- babynames %>% 
+              arrange(gender, yr, desc(rateper10k)) %>% 
+              group_by(gender, yr) %>% 
+              mutate(rank=row_number())
+
+#export for online data viz
+write.csv(babynames %>% filter(yr>=1930) %>% select(yr, gender, name, rateper10k, num_births), './output/babynames_foronline.csv', row.names = FALSE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+#trending names
+#need to set variables above for "fiveyearsago" and "newdatayear"
+
+fiveyrs <- babynames %>% filter(yr==as.numeric(fiveyearsago)) %>% ungroup() %>% select(gender, name, numbirths_oldyr=num_births,rate_oldyr = rateper10k )
+
+
+thisyear <- babynames %>% filter(yr==as.numeric(newdatayear)) %>%ungroup() %>%  select(gender,  name, numbirths_newyr =num_births, rate_newyr =rateper10k) 
+
+
+compareyrs <-  inner_join(fiveyrs, thisyear , by=c("gender"="gender", "name"="name"))
+
+compareyrs <- compareyrs %>% mutate(pctchange = round(((rate_newyr-rate_oldyr)/rate_oldyr)*100,1))
+
+trending_girls <- compareyrs %>% filter(gender=="F") %>% select(name, numbirths_oldyr, numbirths_newyr, rate_oldyr, rate_newyr, pctchange) %>% arrange(desc(pctchange)) 
+
+
+trending_boys <- compareyrs %>% filter(gender=="M") %>% select(name, numbirths_oldyr, numbirths_newyr, rate_oldyr, rate_newyr, pctchange) %>% arrange(desc(pctchange)) 
+
+write.csv(trending_boys, "./output/trending_boys.csv", row.names=FALSE)
+write.csv(trending_girls, "./output/trending_girls.csv", row.names=FALSE)
+
+
+
+```
+
+#Trending girls<br>
+Rate per 10,000 births<br>
+Rate now compared to 5 years ago
+```{r, warning=FALSE, message=FALSE}
+
+trending_girls %>% top_n(10) %>% select(name, rate_oldyr, rate_newyr) %>%
+  kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+
+#Trending boys
+Rate per 10,000 births<br>
+Rate now compared to 5 years ago
+```{r, warning=FALSE, message=FALSE}
+trending_boys %>% top_n(10) %>% select(name, rate_oldyr, rate_newyr) %>%    kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+
+#Top 10 girl names this year<br>
+Rate per 10,000 births 
+```{r, warning=FALSE, message=FALSE}
+top10_girls <-  babynames %>% filter(gender=="F",yr==as.numeric(newdatayear)) %>% ungroup() %>%  select(name, rateper10k) %>% arrange(desc(rateper10k)) %>% top_n(10)
+
+
+top10_girls %>%   kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+
+
+```
+
+#Top 10 boy names this year<br>
+Rate per 10,000 births
+```{r, warning=FALSE, message=FALSE}
+top10_boys <-  babynames %>% filter(gender=="M",yr==as.numeric(newdatayear)) %>% ungroup() %>%  select(name, rateper10k) %>% arrange(desc(rateper10k)) %>% top_n(10)
+
+
+top10_boys %>%   kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+# Out of fashion girl names<br>
+Based on the average "age" of the name
+```{r, warning=FALSE, message=FALSE}
+babynames %>% filter(gender=='F') %>% group_by(name) %>% summarise(avgage= mean(agenow)) %>% arrange(desc(avgage)) %>%  top_n(10) %>% kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+#Out of fashion boy names<br>
+Based on the average "age" of the name
+```{r, warning=FALSE, message=FALSE}
+babynames %>% filter(gender=='M') %>% group_by(name) %>% summarise(avgage= weighted.mean(agenow, num_births)) %>% arrange(desc(avgage)) %>%  top_n(10) %>% kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+# New girl names
+Only names with at least 50 births
+```{r}
+
+babynames %>% filter(gender=='F') %>% group_by(name) %>% summarise(avgage= round(mean(agenow),1), totbirths=sum(num_births)) %>% arrange(desc(totbirths)) %>% filter(avgage<=4, totbirths>=50) %>%  kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+#New boy names
+```{r}
+babynames %>% filter(gender=='M') %>% group_by(name) %>% summarise(avgage= round(mean(agenow),1), totbirths=sum(num_births)) %>% arrange(desc(totbirths)) %>% filter(avgage<=4, totbirths>=50) %>%  kable("html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position="left")
+```
+
+```{r, include=FALSE, eval=FALSE}
+
+packages <- c("aws.s3")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())), repos = "http://cran.us.r-project.org")  
+}
+
+library(aws.s3)
+
+
+Sys.setenv("AWS_ACCESS_KEY_ID" =  rstudioapi::askForPassword("AWS_ACCESS_KEY_ID"),
+
+           "AWS_SECRET_ACCESS_KEY" = rstudioapi::askForPassword("AWS_SECRET_ACCESS_KEY"))
+		   
+		   get_bucket("strib-data-internal")
+
+
+put_object(file = "babynames.html", object = "projects/misc/babynames.html", bucket = "strib-data-internal")
+
+put_object(file = "babynames.html", object = "projects/misc/babynames.html", bucket = "strib-data-internal", acl=c("public-read"))
+```
+
+
+```{r}
+babynames %>% group_by(yr) %>% summarize(count=n(), babies=sum(num_births))
+```
+
+```{r}
+babynames %>% filter(yr>=1920) %>% ungroup() %>% summarize(count=n(), babies= sum(num_births))
+```
+
